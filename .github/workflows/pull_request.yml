@@ -42,8 +42,11 @@ jobs:
           sed -i 's/\r//' gradlew gradlew.bat
           bash gradlew :app:assembleDebug 2>&1 | tail -300
 
+      - name: Find APK
+        run: find app/build/outputs -name "*.apk" -type f 2>/dev/null || echo "No APK found in build outputs"
+
       - name: Upload APK
         uses: actions/upload-artifact@v6
         with:
           name: app-debug
-          path: app/build/outputs/apk/debug/
+          path: app/build/outputs/apk/
