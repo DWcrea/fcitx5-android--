@@ -44,17 +44,14 @@ jobs:
 
       - name: Find APK
         run: |
-          echo "=== Build output structure ==="
-          find app/build -type f 2>/dev/null | head -50 || echo "No build output"
-          echo "=== Searching for APK ==="
-          find . -name "*.apk" -type f 2>/dev/null || echo "No APK found"
-          echo "=== Searching for .aab ==="
-          find . -name "*.aab" -type f 2>/dev/null || echo "No AAB found"
-          echo "=== Available Gradle tasks ==="
-          bash gradlew :app:tasks --group="build" 2>&1 | grep -i "assemble" | head -10 || true
+          echo "=== Searching for APK ===" >> $GITHUB_STEP_SUMMARY
+          find . -name "*.apk" -type f 2>/dev/null | tee -a $GITHUB_STEP_SUMMARY || echo "No APK found" >> $GITHUB_STEP_SUMMARY
+          echo "=== Build outputs tree ===" >> $GITHUB_STEP_SUMMARY
+          find app/build/outputs -type f 2>/dev/null | head -30 | tee -a $GITHUB_STEP_SUMMARY || echo "(empty)" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload APK
         uses: actions/upload-artifact@v6
         with:
           name: app-debug
-          path: app/build/outputs/apk/debug/*.apk
+          path: "**/*.apk"
+          if-no-files-found: error
