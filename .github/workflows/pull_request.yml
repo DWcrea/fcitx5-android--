@@ -44,11 +44,17 @@ jobs:
 
       - name: Find APK
         run: |
-          echo "=== Searching for APK files ==="
+          echo "=== Build output structure ==="
+          find app/build -type f 2>/dev/null | head -50 || echo "No build output"
+          echo "=== Searching for APK ==="
           find . -name "*.apk" -type f 2>/dev/null || echo "No APK found"
+          echo "=== Searching for .aab ==="
+          find . -name "*.aab" -type f 2>/dev/null || echo "No AAB found"
+          echo "=== Available Gradle tasks ==="
+          bash gradlew :app:tasks --group="build" 2>&1 | grep -i "assemble" | head -10 || true
 
       - name: Upload APK
         uses: actions/upload-artifact@v6
         with:
           name: app-debug
-          path: "**/*.apk"
+          path: app/build/outputs/apk/debug/*.apk
