@@ -200,7 +200,7 @@ abstract class BaseKeyboard(
                         GestureType.Up -> {
                             when {
                                 event.totalX == 0 && event.totalY == 0 -> { /* tap, handled by Press */ }
-                                abs(event.totalX) >= abs(event.totalY) ->
+                                event.totalX.absoluteValue >= event.totalY.absoluteValue ->
                                     onAction(KeyAction.DeleteSelectionAction(event.totalX))
                                 event.totalY < 0 -> onAction(KeyAction.SelectAllDeleteAction)
                                 event.totalY > 0 -> onAction(KeyAction.UndoAction)
