@@ -269,6 +269,21 @@ class AppPrefs(private val sharedPreferences: SharedPreferences) {
             expandedCandidateGridSpanCountLandscape = secondary
         }
 
+        val keyboardBackgroundBlur = switch(
+            R.string.keyboard_background_blur,
+            "keyboard_background_blur",
+            false
+        )
+        val keyboardBackgroundBlurRadius = int(
+            R.string.keyboard_background_blur_radius,
+            "keyboard_background_blur_radius",
+            25,
+            1,
+            100,
+            "",
+            1,
+        )
+
     }
 
     inner class Candidates :

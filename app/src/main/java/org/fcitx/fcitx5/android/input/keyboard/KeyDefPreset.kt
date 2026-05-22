@@ -93,6 +93,32 @@ class AlphabetDigitKey(
     )
 }
 
+class ClipboardAlphabetKey(
+    character: String,
+    punctuation: String,
+    clipboardAction: KeyAction,
+    variant: Variant = Variant.Normal,
+    popup: Array<Popup>? = null
+) : KeyDef(
+    Appearance.AltText(
+        displayText = character,
+        altText = punctuation,
+        textSize = 23f,
+        variant = variant
+    ),
+    setOf(
+        Behavior.Press(KeyAction.FcitxKeyAction(character)),
+        Behavior.Swipe(
+            action = KeyAction.FcitxKeyAction(punctuation),
+            altDownAction = clipboardAction
+        )
+    ),
+    popup ?: arrayOf(
+        Popup.AltPreview(character, punctuation),
+        Popup.Keyboard(character)
+    )
+)
+
 class CapsKey : KeyDef(
     Appearance.Image(
         src = R.drawable.ic_capslock_none,

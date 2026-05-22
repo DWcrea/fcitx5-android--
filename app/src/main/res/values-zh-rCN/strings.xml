@@ -106,7 +106,10 @@
     <string name="key_ripple_effect">启用按键水波纹特效</string>
     <string name="key_border">启用按键边框</string>
     <string name="brightness">亮度</string>
-    <string name="key_radius">按键圆角半径</string>
+    <string name="key_radius">字母键圆角半径</string>
+    <string name="function_key_radius">功能键圆角半径</string>
+    <string name="keyboard_background_blur">键盘背景模糊</string>
+    <string name="keyboard_background_blur_radius">模糊半径</string>
     <string name="text_editing_button_radius">文本编辑按钮圆角半径</string>
     <string name="clipboard_entry_radius">剪贴板条目圆角半径</string>
     <string name="key_horizontal_margin">按键横向边距</string>

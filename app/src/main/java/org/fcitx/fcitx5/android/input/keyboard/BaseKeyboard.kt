@@ -186,19 +186,25 @@ abstract class BaseKeyboard(
                 swipeEnabled = true
                 swipeRepeatEnabled = true
                 swipeThresholdX = selectionSwipeThreshold
-                swipeThresholdY = disabledSwipeThreshold
+                swipeThresholdY = inputSwipeThreshold
                 onGestureListener = OnGestureListener { view, event ->
                     when (event.type) {
                         GestureType.Move -> {
-                            val count = event.countX
-                            if (count != 0) {
-                                onAction(KeyAction.MoveSelectionAction(count))
+                            val countX = event.countX
+                            if (countX != 0) {
+                                onAction(KeyAction.MoveSelectionAction(countX))
                                 if (hapticOnRepeat) InputFeedbacks.hapticFeedback(view)
                                 true
                             } else false
                         }
                         GestureType.Up -> {
-                            onAction(KeyAction.DeleteSelectionAction(event.totalX))
+                            when {
+                                event.totalX == 0 && event.totalY == 0 -> { /* tap, handled by Press */ }
+                                abs(event.totalX) >= abs(event.totalY) ->
+                                    onAction(KeyAction.DeleteSelectionAction(event.totalX))
+                                event.totalY < 0 -> onAction(KeyAction.SelectAllDeleteAction)
+                                event.totalY > 0 -> onAction(KeyAction.UndoAction)
+                            }
                             false
                         }
                         else -> false
@@ -233,12 +239,19 @@ abstract class BaseKeyboard(
                         onGestureListener = OnGestureListener { view, event ->
                             when (event.type) {
                                 GestureType.Up -> {
-                                    if (!event.consumed && swipeSymbolDirection.checkY(event.totalY)) {
-                                        onAction(it.action)
+                                    if (!event.consumed && event.totalY != 0) {
+                                        if (it.altDownAction != null) {
+                                            when {
+                                                event.totalY < 0 -> onAction(it.action)
+                                                event.totalY > 0 -> onAction(it.altDownAction)
+                                            }
+                                        } else {
+                                            if (swipeSymbolDirection.checkY(event.totalY)) {
+                                                onAction(it.action)
+                                            } else false
+                                        }
                                         true
-                                    } else {
-                                        false
-                                    }
+                                    } else false
                                 }
                                 else -> false
                             } || oldOnGestureListener.onGesture(view, event)

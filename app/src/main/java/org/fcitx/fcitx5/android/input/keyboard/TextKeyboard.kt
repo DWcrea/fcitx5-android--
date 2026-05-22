@@ -44,7 +44,7 @@ class TextKeyboard(
                 AlphabetKey("P", "0")
             ),
             listOf(
-                AlphabetKey("A", "@"),
+                ClipboardAlphabetKey("A", "@", KeyAction.SelectAllAction),
                 AlphabetKey("S", "*"),
                 AlphabetKey("D", "+"),
                 AlphabetKey("F", "-"),
@@ -57,9 +57,9 @@ class TextKeyboard(
             listOf(
                 CapsKey(),
                 AlphabetKey("Z", "'"),
-                AlphabetKey("X", ":"),
-                AlphabetKey("C", "\""),
-                AlphabetKey("V", "?"),
+                ClipboardAlphabetKey("X", ":", KeyAction.CutAction),
+                ClipboardAlphabetKey("C", "\"", KeyAction.CopyAction),
+                ClipboardAlphabetKey("V", "?", KeyAction.PasteAction),
                 AlphabetKey("B", "!"),
                 AlphabetKey("N", "~"),
                 AlphabetKey("M", "\\"),

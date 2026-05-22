@@ -73,6 +73,20 @@ class InputView(
 
     private val keyBorder by ThemeManager.prefs.keyBorder
 
+    private val keyboardBackgroundBlur by keyboardPrefs.keyboardBackgroundBlur
+    private val keyboardBackgroundBlurRadius by keyboardPrefs.keyboardBackgroundBlurRadius
+
+    internal fun applyKeyboardBlur() {
+        val win = service.window.window ?: return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val keyboardAlpha = theme.keyboardColor ushr 24
+            val blurEnabled = keyboardBackgroundBlur.getValue() && keyboardAlpha < 0xFF
+            win.setBackgroundBlurRadius(
+                if (blurEnabled) keyboardBackgroundBlurRadius.getValue() else 0
+            )
+        }
+    }
+
     private val customBackground = imageView {
         scaleType = ImageView.ScaleType.CENTER_CROP
     }
@@ -188,6 +202,8 @@ class InputView(
         // MUST call before any operation
         setupScope()
 
+        applyKeyboardBlur()
+
         // restore punctuation mapping in case of InputView recreation
         fcitx.launchOnReady {
             punctuation.updatePunctuationMapping(it.statusAreaActionsCached)
@@ -258,6 +274,8 @@ class InputView(
         })
 
         keyboardPrefs.registerOnChangeListener(onKeyboardSizeChangeListener)
+        keyboardBackgroundBlur.registerOnChangeListener { _, _ -> applyKeyboardBlur() }
+        keyboardBackgroundBlurRadius.registerOnChangeListener { _, _ -> applyKeyboardBlur() }
     }
 
     private fun updateKeyboardSize() {

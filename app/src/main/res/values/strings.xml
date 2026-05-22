@@ -106,7 +106,10 @@
     <string name="key_ripple_effect">Enable key ripple effect</string>
     <string name="key_border">Enable key border</string>
     <string name="brightness">Brightness</string>
-    <string name="key_radius">Key radius</string>
+    <string name="key_radius">Letter key radius</string>
+    <string name="function_key_radius">Function key radius</string>
+    <string name="keyboard_background_blur">Background blur</string>
+    <string name="keyboard_background_blur_radius">Blur radius</string>
     <string name="text_editing_button_radius">Text editing button radius</string>
     <string name="clipboard_entry_radius">Clipboard entry radius</string>
     <string name="key_horizontal_margin">Key horizontal margin</string>

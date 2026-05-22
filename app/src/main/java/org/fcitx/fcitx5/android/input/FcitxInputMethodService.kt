@@ -567,6 +567,7 @@ class FcitxInputMethodService : LifecycleInputMethodService() {
             Timber.w("Device does not support android.R.attr.colorAccent which it should have.")
         }
         InputFeedbacks.syncSystemPrefs()
+        inputView?.applyKeyboardBlur()
     }
 
     override fun onCreateInputView(): View? {
