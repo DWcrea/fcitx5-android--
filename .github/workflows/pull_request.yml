@@ -40,7 +40,7 @@ jobs:
       - name: Build Debug APK
         run: |
           sed -i 's/\r//' gradlew gradlew.bat
-          bash gradlew :app:assembleDebug
+          bash gradlew :app:assembleDebug 2>&1 | tail -300
 
       - name: Upload APK
         uses: actions/upload-artifact@v6
