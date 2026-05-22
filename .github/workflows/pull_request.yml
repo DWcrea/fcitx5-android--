@@ -38,7 +38,9 @@ jobs:
           validate-wrappers: false
 
       - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug
+        run: |
+          sed -i 's/\r//' gradlew gradlew.bat
+          bash gradlew :app:assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v6
