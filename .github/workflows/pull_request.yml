@@ -4,29 +4,14 @@ on:
   workflow_dispatch:
   push:
     branches: [master]
-  pull_request:
-    types:
-      - opened
-      - reopened
-      # pull request's head branch was updated
-      - synchronize
 
 jobs:
-  build_pull_request:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-24.04
-          - macos-15-intel
-          - macos-26
-          - windows-2025
+  build:
+    runs-on: ubuntu-24.04
     steps:
       - name: Fetch source code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
           submodules: recursive
 
       - name: Setup Java
@@ -38,58 +23,25 @@ jobs:
       - name: Setup Android environment
         uses: android-actions/setup-android@v3
 
-      - name: Install Android NDK
+      - name: Install NDK & CMake
         run: |
-          sdkmanager --install "cmake;3.31.6"
+          sdkmanager --install "cmake;3.31.6" "ndk;28.0.13004108"
 
-      - name: Install system dependencies (Ubuntu)
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+      - name: Install system dependencies
         run: |
           sudo apt update
           sudo apt install extra-cmake-modules gettext
-
-      - name: Install system dependencies (macOS)
-        if: ${{ startsWith(matrix.os, 'macos') }}
-        run: |
-          brew install extra-cmake-modules
-
-      - name: Install system dependencies (Windows)
-        if: ${{ startsWith(matrix.os, 'windows') }}
-        run: |
-          C:/msys64/usr/bin/pacman -Syu --noconfirm
-          C:/msys64/usr/bin/pacman -S --noconfirm mingw-w64-ucrt-x86_64-gettext mingw-w64-ucrt-x86_64-extra-cmake-modules
-          Add-Content $env:GITHUB_PATH "C:/msys64/ucrt64/bin"
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
           validate-wrappers: false
 
-      - name: Build Release APK
-        run: |
-          ./gradlew :app:assembleRelease
-          ./gradlew :assembleReleasePlugins
+      - name: Build Debug APK
+        run: ./gradlew :app:assembleDebug
 
-      - name: Upload app
+      - name: Upload APK
         uses: actions/upload-artifact@v6
         with:
-          name: app-${{ matrix.os }}
-          path: app/build/outputs/apk/release/
-
-      - name: Pack plugins
-        shell: bash
-        run: |
-          mkdir plugins-to-upload
-          for i in $(ls plugin)
-          do
-            if [ -d "plugin/${i}" ]
-            then
-              mv "plugin/${i}/build/outputs/apk/release" "plugins-to-upload/${i}"
-            fi
-          done
-
-      - name: Upload plugins
-        uses: actions/upload-artifact@v6
-        with:
-          name: plugins-${{ matrix.os }}
-          path: plugins-to-upload
+          name: app-debug
+          path: app/build/outputs/apk/debug/
